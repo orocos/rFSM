@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.3)
 project(rfsm)
 
-find_package(catkin REQUIRED)
-catkin_package()
-catkin_add_env_hooks(10.rfsm SHELLS sh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+find_package(ament_cmake REQUIRED)
+ament_environment_hooks(env-hooks/rfsm.sh.in)
+ament_package()
 
 #############
 ## Install ##
@@ -15,16 +15,22 @@ catkin_add_env_hooks(10.rfsm SHELLS sh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env
 file(GLOB LUA_FILES "*.lua")
 install(
   FILES ${LUA_FILES}
-  DESTINATION ${CATKIN_GLOBAL_SHARE_DESTINATION}/lua/5.1/rfsm/
+  DESTINATION share/lua/5.1/rfsm/
 )
+file(GLOB GV_FILES "graphiviz-lib/*")
+install(
+  FILES ${GV_FILES}
+  DESTINATION share/lua/5.1/graphviz/
+)
+
 
 install(
   PROGRAMS tools/rfsm-sim tools/rfsm-viz tools/rfsm2json
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 install(
   FILES tools/rfsm-sim.lua
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION lib/${PROJECT_NAME}
 )
 

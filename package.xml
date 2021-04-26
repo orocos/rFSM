@@ -20,6 +20,9 @@
 
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
-  <buildtool_depend>catkin</buildtool_depend>
+    <buildtool_depend>ament_cmake</buildtool_depend>
+       <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 
 </package>

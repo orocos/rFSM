@@ -1,40 +1,10 @@
 --
--- This file is part of rFSM.
---
--- (C) 2010,2011 Markus Klotzbuecher, markus.klotzbuecher@mech.kuleuven.be,
--- Department of Mechanical Engineering, Katholieke Universiteit
--- Leuven, Belgium.
---
--- You may redistribute this software and/or modify it under either
--- the terms of the GNU Lesser General Public License version 2.1
--- (LGPLv2.1 <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>)
--- or (at your discretion) of the Modified BSD License: Redistribution
--- and use in source and binary forms, with or without modification,
--- are permitted provided that the following conditions are met:
---    1. Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---    2. Redistributions in binary form must reproduce the above
---       copyright notice, this list of conditions and the following
---       disclaimer in the documentation and/or other materials provided
---       with the distribution.
---    3. The name of the author may not be used to endorse or promote
---       products derived from this software without specific prior
---       written permission.
---
--- THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
--- OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
--- WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
--- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
--- GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
--- INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
--- WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
--- NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
--- SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---
---
 -- Various pretty printing functions to make life easier
+--
+-- (C) 2010-2013 Markus Klotzbuecher <markus.klotzbuecher@mech.kuleuven.be>
+-- (C) 2014-2020 Markus Klotzbuecher <mk@mkio.de>
+--
+-- SPDX-License-Identifier: BSD-3-Clause
 --
 
 require("ansicolors")
@@ -107,8 +77,7 @@ local ctab = {
    TIMEEVENT = ac.yellow .. ac.bright
 }
 
---- Colorized fsm.dbg hook replacement.
-function dbgcolor(name, ...)
+function dbgcolorize(name, ...)
    local str = ""
    local args = { ... }
 
@@ -123,21 +92,29 @@ function dbgcolor(name, ...)
    else
       str = str .. utils.rpad(ptab[1], pad) .. table.concat(ptab, ' ', 2)
    end
-   print(str)
+
+   return str
+end
+
+--- Colorized fsm.dbg hook replacement.
+function dbgcolor(name, ...)
+    print(dbgcolorize(name, ...))
 end
 
 --- Generate a configurable dbgcolor function.
 -- @param name string name to prepend to printed message.
 -- @param ftab table of the dbg ids to print.
 -- @param defshow if false fields not mentioned in ftab are not shown. If true they are.
-function gen_dbgcolor(name, ftab, defshow)
+-- @param print_fcn a function actually used for printing. Defaults to print.
+function gen_dbgcolor(name, ftab, defshow, print_fcn)
    name = name or "<unnamed SM>"
    ftab = ftab or {}
    if defshow == nil then defshow = true end
+   if print_fcn == nil then print_fcn = print end
 
    return function (tag, ...)
-	     if ftab[tag] == true then dbgcolor(name, tag, ...)
-	     elseif ftab[tag] == false then return
-	     else if defshow then dbgcolor(name, tag, ...) end end
-	  end
+      if ftab[tag] == true then print_fcn(dbgcolorize(name, tag, ...))
+      elseif ftab[tag] == false then return
+      else if defshow then print_fcn(dbgcolorize(name, tag, ...)) end end
+   end
 end

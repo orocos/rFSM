@@ -45,8 +45,8 @@ local type = type
 local tonumber = tonumber
 local math = math
 local string = string
-local rfsm = rfsm
-local time = time
+local rfsm = require("rfsm")
+local time = require("time")
 local ts2str = time.ts2str
 
 module 'rfsm_timeevent'

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>rfsm</name>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <description>This package contains the rFSM flavor of Statecharts.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
@@ -19,6 +19,9 @@
 
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
-  <buildtool_depend>catkin</buildtool_depend>
+    <buildtool_depend>ament_cmake</buildtool_depend>
+       <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 
 </package>
